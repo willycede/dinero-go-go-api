@@ -1,8 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IBaseService } from '../common/interface/IBaseService.interface';
-import { User } from './user.model';
+import { User, UserDocument } from './user.model';
 import { UserRepository } from '../common/repository/user.repository';
-import { UserDocument } from '../../dist/user/user.model';
 
 @Injectable()
 export class UserService implements IBaseService<User> {
@@ -111,6 +110,15 @@ export class UserService implements IBaseService<User> {
   async updateOne(query: any, doc: any): Promise<void> {
     try {
       await this.userRepository.updateOne(query, doc);
+    } catch (error) {
+      this.logger.error('updateOne: ', error);
+      throw error;
+    }
+  }
+
+  async getUsers(): Promise<User[]> {
+    try {
+      return await this.userRepository.find({ deleted: false });
     } catch (error) {
       this.logger.error('updateOne: ', error);
       throw error;
